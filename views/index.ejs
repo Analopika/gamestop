@@ -11,12 +11,13 @@
       align-items: center;
       flex-direction: column;
       font-size: 2rem;
-      background-color: white;
-      transition: background-color 0.3s;
+      background-color: black;
+      transition: background-color 0.1s;
     }
     #message {
       font-family: sans-serif;
       margin-top: 20px;
+      color: white;
     }
     #name {
       font-size: 1.2rem;
@@ -26,6 +27,7 @@
   </style>
 </head>
 <body>
+    <h1 style="color:white">REACTION TIME TEST</h1>
   <input id="name" type="text" placeholder="Enter your name" required />
   <div id="message">Press SPACE to start</div>
 
@@ -65,7 +67,7 @@
             `⏱ ${name}, your reaction: ${reaction.toFixed(3)}s\nPress SPACE to try again`;
           console.log("Reaction Time:", reaction.toFixed(3) + "s");
 
-          // ✅ Send to backend
+          
           fetch("/submit", {
             method: "POST",
             headers: {
@@ -77,7 +79,7 @@
           .then(data => console.log("Server response:", data))
           .catch(err => console.error("Error:", err));
 
-          document.body.style.backgroundColor = "white";
+          document.body.style.backgroundColor = "black";
           ready = false;
         }
       }

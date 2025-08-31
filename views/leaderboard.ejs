@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Reaction Times</title>
+</head>
+<body>
+  <h1>Reaction Times</h1>
+  <table border="1" cellpadding="5">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Reaction Time (s)</th>
+        <th>IP</th>
+        <th>User-Agent</th>
+        <th>Timestamp</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% reactions.forEach(reaction => { %>
+        <tr>
+          <td><%= reaction.name %></td>
+          <td><%= reaction.time %></td>
+          <td><%= reaction.requestInfo.ip %></td>
+          <td><%= reaction.requestInfo.userAgent %></td>
+          <td><%= new Date(reaction.createdAt).toLocaleString() %></td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</body>
+</html>

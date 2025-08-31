@@ -28,10 +28,14 @@ const reactionSchema = new mongoose.Schema({
 const Reaction = mongoose.model("Reaction", reactionSchema);
 
 function log(req, res, next) {
+    const ip =
+    req.headers['x-forwarded-for']?.split(',')[0] ||
+    req.socket?.remoteAddress ||
+    req.ip; 
   const logData = {
     method: req.method,
     url: req.originalUrl,
-    ip: req.ip,
+    ip: ip,
     userAgent: req.headers["user-agent"],
     timestamp: new Date().toISOString(),
   };
@@ -51,6 +55,16 @@ app.use(express.static("views"));
 
 app.get("/", (req, res) => {
   res.render("index");
+});
+
+app.get("/leaderboard", async (req, res) => {
+  try {
+    const reactions = await Reaction.find().sort({ createdAt: -1 });
+    res.render("leaderboard", { reactions });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server Error");
+  }
 });
 
 app.post("/submit", async (req, res) => {
