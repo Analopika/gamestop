@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Reaction Timer</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      font-size: 2rem;
+      background-color: white;
+      transition: background-color 0.3s;
+    }
+    #message {
+      font-family: sans-serif;
+      margin-top: 20px;
+    }
+    #name {
+      font-size: 1.2rem;
+      padding: 5px;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <input id="name" type="text" placeholder="Enter your name" required />
+  <div id="message">Press SPACE to start</div>
+
+  <script>
+    let waiting = false;
+    let ready = false;
+    let startTime = null;
+
+    document.addEventListener("keydown", (e) => {
+      if (e.code === "Space") {
+        e.preventDefault();
+
+        const name = document.getElementById("name").value.trim();
+        if (!name) {
+          alert("Please enter your name before starting!");
+          return;
+        }
+
+        if (!waiting && !ready) {
+          document.body.style.backgroundColor = "red";
+          document.getElementById("message").innerText = "Wait for GREEN...";
+          waiting = true;
+
+          let randomDelay = Math.floor(Math.random() * 3000) + 2000;
+          setTimeout(() => {
+            document.body.style.backgroundColor = "green";
+            document.getElementById("message").innerText = "PRESS SPACE NOW!";
+            startTime = Date.now();
+            waiting = false;
+            ready = true;
+          }, randomDelay);
+        }
+
+        else if (ready) {
+          let reaction = (Date.now() - startTime) / 1000;
+          document.getElementById("message").innerText =
+            `⏱ ${name}, your reaction: ${reaction.toFixed(3)}s\nPress SPACE to try again`;
+          console.log("Reaction Time:", reaction.toFixed(3) + "s");
+
+          // ✅ Send to backend
+          fetch("/submit", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ name, reaction }),
+          })
+          .then(res => res.json())
+          .then(data => console.log("Server response:", data))
+          .catch(err => console.error("Error:", err));
+
+          document.body.style.backgroundColor = "white";
+          ready = false;
+        }
+      }
+    });
+  </script>
+</body>
+</html>
